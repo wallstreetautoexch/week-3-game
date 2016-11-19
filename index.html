@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>RPS</title>
+    <style media="screen">
+      img {
+        width: 200px;
+        height: 200px;
+      }
+    </style>
+  </head>
+  <body>
+    <p>type Letter to win a car</p>
+    <div id="displayResults">
+      Game Results Go Here
+    </div>
+     <div id="displayResults2">
+      Error messeges Go Here:
+    </div>
+     <div id="displayResults3">
+      Pictures go here:
+    </div> <div id="displayResults4">
+      Guess Progress Goes Here:
+    </div>
+
+
+  <script type="text/javascript">
+
+
+  // Variables
+
+      var computerChoiceTable  = ["eldorado", "markiv", "mustang", "porsche", "gmcmotorhome", "ranchero", "gremlin", "pacer", "rollsroyce", "chrysler"]
+      var computerChoiceTableIndex = 0;
+
+      var alphabetTable = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",   
+                         "s", "t","u", "v", "w", "x", "y", "z" ];
+
+      var alphabetTableIndex = 0;
+
+      var wordGuessesTable  = [];
+      var wordGuessesTableIndex = 0;
+
+      var wordChosenTable = [];
+      var wordChosenTableIndex = 0;
+
+      var letterGuess;
+      var wordChosen;
+      var wordMatchCtr = 0;
+      var wordNoMatchCtr =0;
+      var answerWord = " ";
+      var onOne = "y";
+      var keyPassedAlphaeditSwitch = 0;
+      var invalidGuessSwitch = 0;
+      var validMatchCtr = 0;
+      var successfulCompletionCtr = 0;
+      var trysAllowed = 0;
+      var trysRemaining = 0;
+      var trysAttempted = 0;
+      var display = document.querySelector("#displayResults");
+      var display2 = document.querySelector("#displayResults2");
+      var display3 = document.querySelector("#displayResults3");
+      var display4 = document.querySelector("#displayResults4");
+      var errorCode = "0";
+      var tring
+
+      var image = {
+        rollsroyce : {
+          img : "assets/images/rollsroyce.jpg"        
+        },
+        ranchero : {
+          img :"assets/images/ranchero.jpg"
+        },
+        gmcmotorhome : {
+          img :"assets/images/gmcmotorhome.jpg"
+        },
+        gremlin : {
+          img : "assets/images/gremlin.jpg"
+        },
+        porsche : {
+          img : "assets/images/porsche.jpg"         
+        },
+        mustang : {
+          img : "assets/images/mustang.jpg"
+        },
+        markiv : {
+          img : "assets/images/markiv.jpg"
+        },
+        pacer : {
+          img : "assets/images/pacer.jpg"
+        },
+        chrysler : {
+          img : "assets/images/chrysler.jpg"         
+        },
+        eldorado : {
+          img : "assets/images/eldorado.jpg"
+        },
+        wreck : {
+          img : "assets/images/wreck.jpg"
+        }
+        
+      }
+
+
+      
+
+      function initialize () {
+        console.log("init"); 
+        wordChosen = computerChoiceTable[Math.floor(Math.random()*computerChoiceTable.length)];
+        console.log(wordChosen); 
+        wordChosenTable = wordChosen.split("");
+        console.log(wordChosenTable); 
+        console.log(wordChosen);
+        trysAllowed = wordChosenTable.length * 2;
+        console.log(wordChosenTable.length)
+
+        //Initialize Word Guesses Table
+
+        for (wordGuessesTableIndex =  0; wordGuessesTableIndex < wordChosenTable.length; wordGuessesTableIndex ++)  
+             { wordGuessesTable[wordGuessesTableIndex] = "-"};
+         console.log(wordGuessesTable);        
+        }
+
+      function alphaEdit  (key1) {
+       console.log("edit");
+       var key1; 
+       //Edit Letter Key that is valid value  a thru z
+        keyPassedAlphaeditSwitch = 0;
+        for (alphabetTableIndex = 0; alphabetTableIndex < 26;  alphabetTableIndex ++ ){
+            if (key1 == alphabetTable[alphabetTableIndex])
+            {keyPassedAlphaeditSwitch = 1;}
+        } 
+      }
+ 
+     function  validGuessEdit  (key2) {
+            console.log("guess edit"); 
+      // Validate That Input has not already been used
+            var key2;
+            invalidGuessSwitch = 0;
+            for(wordGuessesTableIndex = 0; wordGuessesTableIndex < wordGuessesTable.length; wordGuessesTableIndex ++){
+                if (key2 == wordGuessesTable[wordGuessesTableIndex]){
+                  invalidGuessSwitch = 1;} 
+                  }
+                }
+
+      function matchLetterToChosenWord  (key3) {
+            console.log("match");
+            var key3 
+            validMatchCtr = 0;
+            for(wordChosenTableIndex = 0; wordChosenTableIndex < wordChosenTable.length; wordChosenTableIndex ++){ 
+                    
+                    if (key3 == wordChosenTable[wordChosenTableIndex])
+                     { wordGuessesTableIndex = wordChosenTableIndex;
+                       wordGuessesTable[wordGuessesTableIndex] = key3;
+                       validMatchCtr ++;}
+
+                                             }
+                    console.log(wordGuessesTable);
+                                             }
+
+      function checkForSuccessfulCompletion (){
+          console.log("chk complet"); 
+        // check for "-" in wordGuessesTable
+            successfulCompletionCtr = 0;
+            for(wordGuessesTableIndex = 0; wordGuessesTableIndex < wordGuessesTable.length; wordGuessesTableIndex ++){
+                if( wordGuessesTable[wordGuessesTableIndex] == "-" ) {
+                  successfulCompletionCtr ++;} 
+
+         } console.log(successfulCompletionCtr);
+        } 
+
+        function trysRemainingCalc (k, c) {
+
+          display4.innerHTML = wordGuessesTable;
+          console.log("trys"); 
+          trysAttempted ++;
+          trysRemaining = trysAllowed - trysAttempted
+          if (trysAttempted  > trysAllowed)
+             {var string = '<p>Game Over You Lose Maximum Number of Attempts Reached   ' + trysAttempted; + '</p>';
+             string += "<img src= assets/images/wreck.jpg>";
+             display3.innerHTML = string;
+             console.log("Game Over You Lose Maximum Number of Attempts Reached:   " + trysAttempted);     // put wreck image here
+             }
+          else
+             {console.log ("Trys Allowed " + trysAllowed);
+              console.log ("Trys Attempted " + trysAttempted);
+              console.log ("Trys trysRemaining " + trysRemaining);
+              console.log ("start same game again");
+              var string = '<p> Your Stats </p>';
+              string += '<p>User chose: ' + k + '</p>';
+              string += '<p>Trys Allowed: ' + trysAllowed; + '</p>';
+              string += '<p>Trys Attempted: ' + trysAttempted; + '</p>';
+              string += '<p>Trys trysRemaining: ' + trysRemaining; + '</p>';
+              display.innerHTML = string;}
+
+              if (c == "0")
+               {var string2 = '<p>      </p>';
+                  display2.innerHTML = string2;}
+
+
+              if (c == "1")
+                {var string2 = '<p>error msg - did not pass alpha edit enter valid letter between A and Z'  + k; +'</p>';
+                  display2.innerHTML = string2;
+                  errorCode = "0"}
+                
+              if (c == "2")
+                   {var string = '<p>error msg - did not pass guess edit letter already used:   '   + k; +'</p>';
+                    display2.innerHTML = string;
+                    errorCode = "0"}
+
+              if (c == "3")
+                  {var string = '<p>error msg - did not pass guess edit letter no match to word     '   + k; +'</p>';
+                  display2.innerHTML = string;
+                  errorCode = "0"}
+               }
+              
+
+            
+
+        function displayResults(whoWon, k, c, imag, snd){
+        var string = '<p>' + whoWon + '</p>';
+        string += '<p>User chose: ' + k + '<p>';
+        string += '<p>Computer chose: ' + c + '<p>';
+        string += '<p>Wins: ' + wins; + '</p>';
+        string += '<p>Losses: ' + losses; + '</p>';
+        string += '<p>Ties: ' + ties; + '</p>';
+        string += '<p>Your Guesses: ' + guesses ; + '</p>';
+        string += "<img src=" + imag + ">";
+        
+
+        display.innerHTML = string;
+      }
+
+        function pictureForCar () {
+
+          if (wordChosen == "pacer") {
+              string += "<img src= assets/images/pacer.jpg>";
+              display3.innerHTML = string;}
+          if (wordChosen == "gremlin") {
+               string += "<img src= assets/images/gremlin.jpg>";
+              display3.innerHTML = string;}
+          if (wordChosen == "gmcmotorhome") {
+               string += "<img src= assets/images/gmcmotorhome.jpg>";
+              display3.innerHTML = string;}
+          if (wordChosen == "mustang") {
+               string += "<img src= assets/images/mustang.jpg>";
+              display3.innerHTML = string;}
+          if (wordChosen == "chrysler") {
+                string += "<img src= assets/images/chrysler.jpg>";
+              display3.innerHTML = string;}
+          if (wordChosen == "porsche") {
+                string += "<img src= assets/images/porsche.jpg>";
+              display3.innerHTML = string;}
+          if (wordChosen == "eldorado") {
+                string += "<img src= assets/images/eldorado.jpg>";
+              display3.innerHTML = string;}
+          if (wordChosen == "ranchero") {
+               string += "<img src= assets/images/ranchero.jpg>";
+              display3.innerHTML = string;}
+          if (wordChosen == "markiv") {
+              string += "<img src= assets/images/markiv.jpg>";
+              display3.innerHTML = string;}
+          if (wordChosen == "rollsroyce") {
+                string += "<img src= assets/images/rollsroyce.jpg>";
+              display3.innerHTML = string;}
+          
+        }
+
+
+
+// ------------------Main Line Code ---------------------
+          console.log("start");
+         
+          initialize ();
+
+            if (wordChosen == "pacer") {
+              tring += "<img src= assets/images/pacer.jpg>";
+              display3.innerHTML = tring;}
+          if (wordChosen == "gremlin") {
+               tring += "<img src= assets/images/gremlin.jpg>";
+              display3.innerHTML = tring;}
+          if (wordChosen == "gmcmotorhome") {
+               tring += "<img src= assets/images/gmcmotorhome.jpg>";
+              display3.innerHTML = tring;}
+          if (wordChosen == "mustang") {
+               tring += "<img src= assets/images/mustang.jpg>";
+              display3.innerHTML = tring;}
+          if (wordChosen == "chrysler") {
+                tring += "<img src= assets/images/chrysler.jpg>";
+              display3.innerHTML = tring;}
+          if (wordChosen == "porsche") {
+                tring += "<img src= assets/images/porsche.jpg>";
+              display3.innerHTML = tring;}
+          if (wordChosen == "eldorado") {
+                tring += "<img src= assets/images/eldorado.jpg>";
+              display3.innerHTML = tring;}
+          if (wordChosen == "ranchero") {
+               tring += "<img src= assets/images/ranchero.jpg>";
+              display3.innerHTML = tring;}
+          if (wordChosen == "markiv") {
+              tring += "<img src= assets/images/markiv.jpg>";
+              display3.innerHTML = tring;}
+          if (wordChosen == "rollsroyce") {
+                tring += "<img src= assets/images/rollsroyce.jpg>";
+              display3.innerHTML = tring;}
+          
+
+        
+          document.onkeyup = function(event){ 
+          var key = event.key;
+
+          
+          
+          
+       
+          alphaEdit (key);
+          if (keyPassedAlphaeditSwitch == 1){} 
+            else
+             {
+               errorCode = "1"
+               console.log("error msg - did not pass alpha edit enter valid letter between A and Z"  + key);
+               trysRemainingCalc (key, errorCode)
+               return}
+          validGuessEdit (key);
+          if (invalidGuessSwitch == 0){display4.innerHTML = wordGuessesTable;}
+            else
+             { console.log("error msg - did not pass guess edit letter"   + key +   "already used");
+               errorCode = "2"
+               trysRemainingCalc (key, errorCode)
+                return};
+          matchLetterToChosenWord (key);
+          if (validMatchCtr > 0){}
+            else
+               { console.log("error msg - did not pass guess edit letter"   + key +  " no mtch to word");
+                 errorCode = "3"
+                 trysRemainingCalc (key, errorCode)
+              return}
+          
+            console.log(onOne)
+           if (key == null)
+             {onOne = "n";
+              console.log(onOne)}
+              else
+              {
+          
+                checkForSuccessfulCompletion ();
+                if (successfulCompletionCtr == 0)
+
+                   {
+                    
+                    var string = '<p> SUCCESSS YOU WON THE CAR</p>';
+                    display2.innerHTML = string;
+                    var string = '<p> -----GAME OVER------</p>';
+                    display2.innerHTML = string;
+                    display4.innerHTML = wordGuessesTable;
+                    console.log ("success you matched"  + wordGuessesTable);                           
+                    console.log ("Game Over Press New Game Button");
+                    console.log ("Display approp image and counters");
+                    }
+                else{ 
+                     trysRemainingCalc (key, errorCode);}
+              }
+            }
+
+            
+          
+
+        
+           
+
+
+
+         
+  
+
+  </script>
+
+</body>
+</html
